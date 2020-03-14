@@ -5,6 +5,7 @@ import ssl, socket, time, struct
 from time import sleep
 from setup import *
 from slip import *
+from klf200api import *
 
 LoopDelay       = 1
 
@@ -14,7 +15,7 @@ def getIndex(sourceDict, value):
 def toHex(s):
     return ":".join("{:02x}".format(c) for c in s)
 
-def init(klf200adr, portset):
+def init():
     sock = socket.socket(socket.AF_INET)
     sock.settimeout(10.0)
 

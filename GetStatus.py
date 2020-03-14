@@ -6,7 +6,6 @@ from toolbox import *
 from setup import *
 from time import sleep
 
-PORT            = 51200
 LoopDelay       = 1
 
 
