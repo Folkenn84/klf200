@@ -52,6 +52,9 @@ GW_STATUS_REQUEST_REQ						=  0x0305
 GW_STATUS_REQUEST_CFM						=  0x0306
 GW_STATUS_REQUEST_NTF 						=  0x0307
 
+GW_GET_STATE_REQ                            =  0x000C
+GW_GET_STATE_CFM                            =  0x000D
+
 # ===============================================================================
 #
 # ===============================================================================
@@ -150,6 +153,16 @@ class ST_GW_FRAME:
 
     def pack_data(self):
         return b""
+
+class ST_GW_GET_STATE_REQ (ST_GW_FRAME):
+    def __init__(self):
+        ST_GW_FRAME.__init__(self, GW_GET_STATE_REQ)
+        self.DataLength        = 0
+
+
+    def pack_data(self):
+        ret = b''
+        return ret
 
 class ST_GW_STATUS_REQUEST_REQ (ST_GW_FRAME):
     def __init__(self, wSessionID   = 0x0013,
