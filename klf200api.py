@@ -154,7 +154,7 @@ class ST_GW_FRAME:
     def pack_data(self):
         return b""
 
-class ST_GW_GET_STATE_REQ (ST_GW_FRAME):
+class ST_GW_GET_STATE_REQ(ST_GW_FRAME):
     def __init__(self):
         ST_GW_FRAME.__init__(self, GW_GET_STATE_REQ)
         self.DataLength        = 0

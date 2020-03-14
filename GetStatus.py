@@ -2,6 +2,7 @@
 ## AHM, 2018 
 ##
 from klf200api import *
+from connection import *
 from toolbox import *
 from setup import *
 from time import sleep
@@ -23,7 +24,7 @@ def send_request(conn):
     
 def main():
     try:
-        conn = init(KLF200_ADDRESS, PORT)
+        conn = init()
         send_request(conn)
     except BaseException as e:
         raise(e)
