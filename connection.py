@@ -24,12 +24,14 @@ def init():
 
     #status KLF200
     conn.write(bytes(ST_GW_GET_STATE_REQ()))
-    print(toHex(slip_unpack(conn.recv())))
+    result = slip_unpack(conn.recv())
+
+    code = int(toHex(result[2:5]).replace(':',''), 16)
 
     #connection
-    #conn.write(bytes(ST_GW_PASSWORD_ENTER_REQ(PASSWORD)))
-    #toHex(slip_unpack(conn.recv()))
-
-    time.sleep(LoopDelay)
+    if code == 12:
+        conn.write(bytes(ST_GW_PASSWORD_ENTER_REQ(PASSWORD)))
+        toHex(slip_unpack(conn.recv()))
+        time.sleep(LoopDelay)
 
     return conn
