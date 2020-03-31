@@ -1,34 +1,29 @@
-##
-## AHM, 2018 
-##
+#
+# AHM, 2018
+#
 
 import ssl, socket, time, struct, sys
 from klf200api import *
 from toolbox import toHex
 from connection import *
 from time import sleep
+from CommandSend import send_request as commandSend
 
 
 def send_request(conn, position, nodeID):
-    print("Move Store = ", nodeID)
-    conn.write(bytes(ST_GW_COMMAND_SEND_REQ(NodeID=nodeID, Position=position)))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    # One or more command handler status frames will be recieved.
-    # Number depends of scene size and number of actuator movements.    
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())), "\n")
-    
+    print("Move Store = ", nodeID, "POS = ", position)
+    commandSend(conn, (100 - position) * 512, nodeID)
+
+
 def main():
-    position = (100 - int(sys.argv[1])) * 512
+    position = int(sys.argv[1])
     nodeID = int(sys.argv[2])
 
     try:
         conn = init()
         send_request(conn, position, nodeID)
     except BaseException as e:
-        raise(e)
+        raise (e)
     finally:
         conn.close()
 

@@ -10,21 +10,23 @@ from slip import *
 from setup import *
 from connection import *
 
-def process_connection(conn):
+
+def send_request(conn):
     print("Discover all node types")
     conn.write(bytes(ST_GW_CS_DISCOVER_NODES_REQ()))
     print("Received: ", toHex(slip_unpack(conn.recv())), "\n")
     print("Received: ", toHex(slip_unpack(conn.recv())), "\n")
 
-	
+
 def main():
     try:
         conn = init()
         send_request(conn)
     except BaseException as e:
-        raise(e)
+        raise (e)
     finally:
         conn.close()
+
 
 main()
 print("Finished")

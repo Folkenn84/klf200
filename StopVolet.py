@@ -6,25 +6,22 @@ import ssl, socket, time, struct, sys
 from klf200api import *
 from toolbox import toHex
 from connection import *
+from CommandSend import send_request as commandSend
 
 
-def send_request(conn, position, nodeID):
+def send_request(conn, nodeID):
     print("Stop Store = ", nodeID)
-    conn.write(bytes(ST_GW_COMMAND_SEND_REQ(NodeID=nodeID, Position=position)))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    
-def main():
-    position = 53760
-    nodeID = int(sys.argv[1])
+    position=53760
+    commandSend(conn, position, nodeID)
 
+
+def main():
+    nodeID = int(sys.argv[1])
     try:
         conn = init()
-        send_request(conn, position, nodeID)
+        send_request(conn, nodeID)
     except BaseException as e:
-        raise(e)
+        raise e
     finally:
         conn.close()
 

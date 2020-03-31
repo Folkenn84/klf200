@@ -1,26 +1,25 @@
 ##
 ## AHM, 2018 
+## This scrip will delete io-homecontrol® nodes and system key from KLF200
 ##
 
-import ssl, socket, time, struct, sys
+import ssl, socket, time, struct
 from klf200api import *
 from toolbox import toHex
 from connection import *
-from setup import *
 
 
-def send_request(conn, nodeID):
-    print("Get Node Info with ID = ", nodeID)
-    conn.write(bytes(ST_GW_GET_NODE_INFORMATION_REQ(NodeID=nodeID)))
+def send_request(conn):
+    print("Get System table in KLF200")
+    conn.write(bytes(ST_GW_CS_GET_SYSTEMTABLE_DATA_REQ()))
     print("Received: ", toHex(slip_unpack(conn.recv())))
     print("Received: ", toHex(slip_unpack(conn.recv())))
 
 
 def main():
-    nodeid = int(sys.argv[1])
     try:
         conn = init()
-        send_request(conn, nodeid)
+        send_request(conn)
     except BaseException as e:
         raise e
     finally:

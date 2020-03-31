@@ -8,9 +8,6 @@ from klf200api import *
 from toolbox import toHex
 from connection import *
 
-PORT            = 51200
-LoopDelay       = 1
-
 
 def send_request(conn):
     print("Clear system in KLF200")
@@ -18,13 +15,13 @@ def send_request(conn):
     print("Received: ", toHex(slip_unpack(conn.recv())), "\n")
     print("Received: ", toHex(slip_unpack(conn.recv())), "\n")
 
-	
+
 def main():
     try:
         conn = init()
         send_request(conn)
     except BaseException as e:
-        raise(e)
+        raise e
     finally:
         conn.close()
 

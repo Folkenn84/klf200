@@ -10,13 +10,17 @@ from toolbox import getIndex, toHex
 #
 # ===============================================================================
 
+GW_CS_GET_SYSTEMTABLE_DATA_REQ              =  0x0100
+GW_CS_GET_SYSTEMTABLE_DATA_CFM              =  0x0101
+GW_CS_GET_SYSTEMTABLE_DATA_NTF              =  0x0102
+
 GW_CS_DISCOVER_NODES_REQ                    =  0x0103
 GW_CS_DISCOVER_NODES_CFM                    =  0x0104
 GW_CS_DISCOVER_NODES_NTF                    =  0x0105
 
 GW_CS_VIRGIN_STATE_REQ                      =  0x0108
 GW_CS_VIRGIN_STATE_CFM                      =  0x0109
-    
+
 GW_CS_CONTROLLER_COPY_REQ                   =  0x010A
 GW_CS_CONTROLLER_COPY_CFM                   =  0x010B
 GW_CS_CONTROLLER_COPY_NTF                   =  0x010C
@@ -28,7 +32,7 @@ GW_RECORD_SCENE_NTF							=  0x0407
 
 GW_ACTIVATE_SCENE_REQ                       =  0x0412
 GW_ACTIVATE_SCENE_CFM                       =  0x0413
-    
+
 GW_PASSWORD_ENTER_REQ                       =  0x3000
 GW_PASSWORD_ENTER_CFM                       =  0x3001
 
@@ -47,6 +51,9 @@ GW_GET_NODE_INFORMATION_NTF					=  0x0210
 
 GW_COMMAND_SEND_REQ							=  0x0300
 GW_COMMAND_SEND_CFM							=  0x0301
+GW_COMMAND_RUN_STATUS_NTF					=  0x0302
+GW_COMMAND_REMAINING_TIME_NTF				=  0x0303
+GW_SESSION_FINISHED_NTF						=  0x0304
 
 GW_STATUS_REQUEST_REQ						=  0x0305
 GW_STATUS_REQUEST_CFM						=  0x0306
@@ -131,7 +138,7 @@ dictControllerCopyMode = {
 #
 # ===============================================================================
 
-    
+
 class ST_GW_FRAME:
     def __init__(self, Command):
         self.DataLength    = 0
@@ -144,7 +151,7 @@ class ST_GW_FRAME:
         self.binary_output += self.pack_data()
         self.binary_output += struct.pack("B", self.calc_crc())
         return slip_pack(self.binary_output)
-    
+
     def calc_crc(self):
         crc = 0
         for sym in self.binary_output:
@@ -164,15 +171,15 @@ class ST_GW_GET_STATE_REQ(ST_GW_FRAME):
         return ret
 
 class ST_GW_STATUS_REQUEST_REQ (ST_GW_FRAME):
-    def __init__(self, wSessionID   = 0x0013,
-                 NodeID           = 1):
+    def __init__(self, wSessionID=0x0018,
+                 node_id=2):
         ST_GW_FRAME.__init__(self, GW_STATUS_REQUEST_REQ)
         self.DataLength        = 26
         self.SessionID         = wSessionID
         self.StatusType		   = 3
         self.FPI			   = 0x0000
         self.IndexArrayCount   = 1
-        self.IndexArray        = NodeID
+        self.IndexArray        = node_id
 
 
     def pack_data(self):
@@ -192,7 +199,7 @@ class ST_GW_STATUS_REQUEST_REQ (ST_GW_FRAME):
         ret += bytes([self.StatusType])
         ret += struct.pack("H", self.FPI)
         return ret
-      
+
 class ST_GW_COMMAND_SEND_REQ (ST_GW_FRAME):
     def __init__(self, wSessionID   = 0x0012,
                  CommandOriginator  = 'USER',
@@ -200,7 +207,6 @@ class ST_GW_COMMAND_SEND_REQ (ST_GW_FRAME):
                  NodeID           = 1,
                  Position 			= 0):
         ST_GW_FRAME.__init__(self, GW_COMMAND_SEND_REQ)
-        print('init')
         self.DataLength        = 66
         self.SessionID         = wSessionID
         self.CommandOriginator = getIndex(dictCommandOriginator, CommandOriginator)
@@ -215,7 +221,6 @@ class ST_GW_COMMAND_SEND_REQ (ST_GW_FRAME):
 
     def pack_data(self):
         ret = struct.pack(">H", self.SessionID)
-        print(ret)
         ret += bytes([self.CommandOriginator])
         ret += bytes([self.PriorityLevel])
         ret += bytes([self.ParameterActive])
@@ -252,7 +257,6 @@ class ST_GW_COMMAND_SEND_REQ (ST_GW_FRAME):
         ret += bytes([0])
         ret += struct.pack("H",self.PriorityLevelLock)
         ret += struct.pack("H",0x0000)
-        print(ret)
         return ret
 
 class ST_GW_GET_NODE_INFORMATION_REQ (ST_GW_FRAME):
@@ -268,6 +272,15 @@ class ST_GW_GET_NODE_INFORMATION_REQ (ST_GW_FRAME):
 class ST_GW_GET_ALL_NODES_INFORMATION_REQ (ST_GW_FRAME):
     def __init__(self):
         ST_GW_FRAME.__init__(self, GW_GET_ALL_NODES_INFORMATION_REQ)
+        self.DataLength = 0
+
+    def pack_data(self):
+        ret = b''
+        return ret
+
+class ST_GW_CS_GET_SYSTEMTABLE_DATA_REQ (ST_GW_FRAME):
+    def __init__(self):
+        ST_GW_FRAME.__init__(self, GW_CS_GET_SYSTEMTABLE_DATA_REQ)
         self.DataLength = 0
 
     def pack_data(self):
