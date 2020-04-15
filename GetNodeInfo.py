@@ -12,20 +12,21 @@ from setup import *
 def send_request(conn, nodeID):
     print("Get Node Info with ID = ", nodeID)
     conn.write(bytes(ST_GW_GET_NODE_INFORMATION_REQ(NodeID=nodeID)))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
-    print("Received: ", toHex(slip_unpack(conn.recv())))
+    # print("Received: ", toHex(slip_unpack(conn.recv())))
+    # return conn.recv()
 
 
 def main():
     nodeid = int(sys.argv[1])
     try:
         conn = init()
-        send_request(conn, nodeid)
+        result = send_request(conn, nodeid)
+        print("Received: ", toHex(slip_unpack(result)))
     except BaseException as e:
         raise e
     finally:
         conn.close()
 
 
-main()
-print("Finished")
+# main()
+# print("Finished")

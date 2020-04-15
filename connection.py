@@ -33,7 +33,7 @@ def init():
 
 def initconn():
     sock = socket.socket(socket.AF_INET)
-    sock.settimeout(30.0)
+    sock.settimeout(None)
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     context.check_hostname = False
@@ -43,5 +43,5 @@ def initconn():
     conn = context.wrap_socket(sock) # , server_hostname=KLF200_ADDRESS)
 
     conn.connect((KLF200_ADDRESS, PORT))
-    conn.settimeout(30.0)  # 30 sec
+    conn.settimeout(None)  # 30 sec
     return conn

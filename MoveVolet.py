@@ -12,7 +12,7 @@ from CommandSend import send_request as commandSend
 
 def send_request(conn, position, nodeID):
     print("Move Store = ", nodeID, "POS = ", position)
-    commandSend(conn, (100 - position) * 512, nodeID)
+    commandSend(conn, (100 - position) * 512, nodeID, nodeID)
 
 
 def main():
@@ -27,5 +27,5 @@ def main():
     finally:
         conn.close()
 
-main()
-print("Finished")
+
+# main()

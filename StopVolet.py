@@ -11,8 +11,8 @@ from CommandSend import send_request as commandSend
 
 def send_request(conn, nodeID):
     print("Stop Store = ", nodeID)
-    position=53760
-    commandSend(conn, position, nodeID)
+    position = 53760
+    commandSend(conn, position, nodeID, nodeID+50)
 
 
 def main():
@@ -25,5 +25,5 @@ def main():
     finally:
         conn.close()
 
-main()
-print("Finished")
+
+# main()

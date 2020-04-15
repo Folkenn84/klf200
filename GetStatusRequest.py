@@ -17,18 +17,22 @@ def send_request(conn, node_id):
     # One or more command handler status frames will be recieved.
     # Number depends of scene size and number of actuator movements.    
     result = slip_unpack(conn.recv())
-    print(100 - int(int(toHex(result[13:15]).replace(':', ''), 16) / 512))
+    print(toHex(result))
+    position = 100 - int(int(toHex(result[13:15]).replace(':', ''), 16) / 512)
+    print(position)
     toHex(slip_unpack(conn.recv()))
+    return position
 
 
 def main():
-    nodeID = int(sys.argv[1])
+    node_id = int(sys.argv[1])
     try:
         conn = init()
-        send_request(conn, nodeID)
+        send_request(conn, node_id)
     except BaseException as e:
         raise e
     finally:
         conn.close()
 
-main()
+
+# main()

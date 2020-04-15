@@ -9,15 +9,15 @@ from connection import *
 from time import sleep
 
 
-def send_request(conn, position, nodeID):
-    conn.write(bytes(ST_GW_COMMAND_SEND_REQ(NodeID=nodeID, Position=position)))
-    result = conn.recv()
-    command = parse_command(result)
-    status = parse_command(result, 6, 7)
-    if GW_COMMAND_SEND_CFM == command and status == 1:
-        while True:
-            result = conn.recv()
-            print(toHex(slip_unpack(result)))
-            command = parse_command(result)
-            if command == GW_SESSION_FINISHED_NTF:
-                break
+def send_request(conn, position, nodeID, sessionid):
+    conn.write(bytes(ST_GW_COMMAND_SEND_REQ(NodeID=nodeID, wSessionID=sessionid, Position=position)))
+    #result = conn.recv()
+    #command = parse_command(result)
+    #status = parse_command(result, 6, 7)
+    #if GW_COMMAND_SEND_CFM == command and status == 1:
+    #    while True:
+    #        result = conn.recv()
+    #        print(toHex(slip_unpack(result)))
+    #        command = parse_command(result)
+    #        if command == GW_SESSION_FINISHED_NTF:
+    #            break
