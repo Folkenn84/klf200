@@ -29,7 +29,7 @@ class ThreadReception(threading.Thread):
                 print("command traité : ", toHex(slip_unpack(result)))
                 nodeid = int(parse_command(result, 4, 5))
                 position = 100 - int(parse_command(result, 89, 91) / 512)
-                self.mqtt.publish("klf200/status/" + str(nodeid), payload=position)
+                self.mqtt.publish("klf200/node_" + str(nodeid), payload=position)
             elif GW_NODE_STATE_POSITION_CHANGED_NTF == command:
                 print("command traité : ", toHex(slip_unpack(result)))
                 nodeid = int(parse_command(result, 4, 5))

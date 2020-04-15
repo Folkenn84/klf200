@@ -17,15 +17,17 @@ def send_request(conn):
     print("Received: ", toHex(slip_unpack(conn.recv())))
     print("Received: ", toHex(slip_unpack(conn.recv())))
     print("Received: ", toHex(slip_unpack(conn.recv())), "\n")
-    
+
+
 def main():
     try:
         conn = init()
         send_request(conn)
     except BaseException as e:
-        raise(e)
+        raise e
     finally:
         conn.close()
+
 
 main()
 print("Finished")
