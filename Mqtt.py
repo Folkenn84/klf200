@@ -3,6 +3,8 @@
 ##
 
 import struct, threading
+from ssl import SSLSocket
+
 import paho.mqtt.client as mqtt
 import time
 from setup import *
@@ -49,7 +51,7 @@ class ThreadReception(threading.Thread):
 #
 # ===============================================================================
 def main():
-
+    initconnKlf200()
     client = mqtt.Client("KLF200")
     client.connect(MQTT_ADDRESS)
     client.on_message = on_message
@@ -85,7 +87,8 @@ def main():
             th_R._delete()
             connklf200.close()
             exit("ERROR")
-        exit("OK")
+    exit("OK")
+
 
 def on_message(client, userdata, message):
     value = str(message.payload.decode("utf-8")).split(" ")
@@ -104,8 +107,10 @@ def on_message(client, userdata, message):
     # print("message retain flag=", message.retain)
 
 
-connklf200 = init()
-# conn2klf200 = init()
-main()
-connklf200.close()
-# conn2klf200.close()
+def initconnKlf200():
+    global connklf200
+    connklf200 = init()
+
+
+connklf200 = None
+#main()
