@@ -1,0 +1,12 @@
+[Unit]
+Description=Service klf 200
+After=mosquitto.service
+Wants=syncthing-inotify@.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/klf200/Mqtt.py
+Restart=on-failure
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

@@ -83,7 +83,9 @@ def main():
             client.loop_stop()
             # th_E._stop()
             th_R._delete()
-
+            connklf200.close()
+            exit("ERROR")
+        exit("OK")
 
 def on_message(client, userdata, message):
     value = str(message.payload.decode("utf-8")).split(" ")
