@@ -24,27 +24,30 @@ class ThreadReception(threading.Thread):
         self.mqtt = mqttComm
 
     def run(self):
-        while 1:
-            result = self.connexion.recv()
-            command = parse_command(result)
-            if GW_GET_NODE_INFORMATION_NTF == command:
-                print("command traité : ", toHex(slip_unpack(result)))
-                nodeid = int(parse_command(result, 4, 5))
-                if nodeid == 0:
-                    self.mqtt.publish("klf200/status/" + str(nodeid), payload=toHex(slip_unpack(result)))
+        try:
+            while 1:
+                result = self.connexion.recv()
+                command = parse_command(result)
+                if GW_GET_NODE_INFORMATION_NTF == command:
+                    print("command traité : ", toHex(slip_unpack(result)), flush=True)
+                    nodeid = int(parse_command(result, 4, 5))
+                    if nodeid == 0:
+                        self.mqtt.publish("klf200/status/" + str(nodeid), payload=toHex(slip_unpack(result)))
+                    else:
+                        position = 100 - int(parse_command(result, 89, 91) / 512)
+                        self.mqtt.publish("klf200/status/" + str(nodeid), payload=position)
+                elif GW_NODE_STATE_POSITION_CHANGED_NTF == command:
+                    print("command traité : ", toHex(slip_unpack(result)), flush=True)
+                    nodeid = int(parse_command(result, 4, 5))
+                    if nodeid == 0:
+                        self.mqtt.publish("klf200/status/" + str(nodeid), payload=toHex(slip_unpack(result)))
+                    else:
+                        position = 100 - int(parse_command(result, 6, 8) / 512)
+                        self.mqtt.publish("klf200/status/" + str(nodeid), payload=position)
                 else:
-                    position = 100 - int(parse_command(result, 89, 91) / 512)
-                    self.mqtt.publish("klf200/status/" + str(nodeid), payload=position)
-            elif GW_NODE_STATE_POSITION_CHANGED_NTF == command:
-                print("command traité : ", toHex(slip_unpack(result)))
-                nodeid = int(parse_command(result, 4, 5))
-                if nodeid == 0:
-                    self.mqtt.publish("klf200/status/" + str(nodeid), payload=toHex(slip_unpack(result)))
-                else:
-                    position = 100 - int(parse_command(result, 6, 8) / 512)
-                    self.mqtt.publish("klf200/status/" + str(nodeid), payload=position)
-            else:
-                print("command non traité : ", toHex(slip_unpack(result)))
+                    print("command non traité : ", toHex(slip_unpack(result)), flush=True)
+        except BaseException as e:
+            print(e, flush=True)
 
 
 # ===============================================================================
@@ -59,24 +62,14 @@ def main():
     client.subscribe("klf200/action")
     th_R = ThreadReception(connklf200, client)
     th_R.start()
-    print("starting reception")
+    print("starting reception", flush=True)
 
     client.publish("klf200/action", retain=True)
-    # client.publish("maison/klf200", "STATUS 2")
-
-    # client.publish("maison/klf200", "MOVE 2 100")
-    # client.publish("maison/klf200", "STOP 2")
-    # time.sleep(4)
-    # print("pending", connklf200.pending())
-    # time.sleep(4)
     client.publish("klf200/action", "POSITION_VOLET 0")
     client.publish("klf200/action", "POSITION_VOLET 1")
-    # client.publish("klf200/action", "MOVE 2 50")
-    # client.publish("klf200/action", "STOP 2")
     client.publish("klf200/action", "POSITION_VOLET 2")
     client.publish("klf200/action", "POSITION_VOLET 3")
     client.publish("klf200/action", "POSITION_VOLET 4")
-    # client.publish("klf200/action", "STOP 3")
     client.publish("klf200/action", "POSITION_VOLET 5")
     while True:
         try:
