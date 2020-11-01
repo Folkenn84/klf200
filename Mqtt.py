@@ -13,6 +13,7 @@ from connection import *
 from PositionVolet import send_request as positionVolet
 from MoveVolet import send_request as moveVolet
 from StopVolet import send_request as stopVolet
+from GetStateRequest import send_request as stateRequest
 from slip import *
 from toolbox import *
 
@@ -100,6 +101,8 @@ def on_message(client, userdata, message):
         moveVolet(connklf200, int(value[2]), int(value[1]))
     elif "STOP_VOLET" == value[0]:
         stopVolet(connklf200, int(value[1]))
+    elif "STATE_GATEWAY" == value[0]:
+        stateRequest(connklf200)
     # print("message received ", str(message.payload.decode("utf-8")))
     # print("message topic=", message.topic)
     # print("message qos=", message.qos)
