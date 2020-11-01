@@ -7,6 +7,7 @@ from ssl import SSLSocket
 
 import paho.mqtt.client as mqtt
 import time
+
 from setup import *
 from connection import *
 from PositionVolet import send_request as positionVolet
@@ -44,8 +45,12 @@ class ThreadReception(threading.Thread):
                     else:
                         position = 100 - int(parse_command(result, 6, 8) / 512)
                         self.mqtt.publish("klf200/status/" + str(nodeid), payload=position)
+                elif GW_GET_STATE_CFM == command:
+                    print("command traité : ", toHex(slip_unpack(result)), flush=True)
+                    position = int(parse_command(result, 4, 5))
+                    self.mqtt.publish("klf200/status/gateway", payload=position)
                 else:
-                    print("command non traité : ", toHex(slip_unpack(result)), flush=True)
+                    print("command non traité : %s", toHex(slip_unpack(result)))
         except BaseException as e:
             print(e, flush=True)
 
@@ -75,6 +80,7 @@ def main():
         try:
             time.sleep(5)
         except BaseException as e:
+            print("plantage de la boucle : %s", e)
             client.loop_stop()
             # th_E._stop()
             th_R._delete()
@@ -106,4 +112,4 @@ def initconnKlf200():
 
 
 connklf200 = None
-#main()
+# main()
